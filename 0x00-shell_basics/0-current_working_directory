@@ -1,2 +1,2 @@
-current_directory=$(pwd)
- echo "current working directory: $(current_directory"
+#!/bin/bash
+ pwd
