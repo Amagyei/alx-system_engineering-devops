@@ -1,1 +1,2 @@
--e #!/bin/bash\nls -lan
+#!/bin/bash
+ls -lan
