@@ -1,1 +1,2 @@
--e#!/bin/bash\nrm *~
+#!/bin/bash
+rm *~
