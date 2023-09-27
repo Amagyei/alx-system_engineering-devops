@@ -1,1 +1,2 @@
-pwd
+current_directory=$(pwd)
+ echo "current working directory: $(current_directory"
