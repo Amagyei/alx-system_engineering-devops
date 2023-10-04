@@ -1,2 +1,1 @@
-#!/bin/bash
-find . -type d -empty -printf %fn ; find . -type f -empty -printf %fn ; echo
+find . -empty | rev | cut -d / -f 1 | rev
