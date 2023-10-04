@@ -1,2 +1,2 @@
 #!/bin/bash
-sed -n '1~2p' your_input_file
+cat your_input_file | head -n $(($(wc -l < your_input_file) / 2))
