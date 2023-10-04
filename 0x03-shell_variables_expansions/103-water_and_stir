@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "Result in base bestchol: $((WATER + STIR))" 
+echo "b" 
