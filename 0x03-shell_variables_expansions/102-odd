@@ -1,2 +1,2 @@
 #!/bin/bash
-cat your_input_file | head -n $(($(wc -l < your_input_file) / 2))
+paste -d '\n' - - < your_input_file | grep .
