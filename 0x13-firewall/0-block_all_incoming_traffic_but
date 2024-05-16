@@ -1,0 +1,11 @@
+ sudo apt update
+    2  sudo apt install ufw
+    3  sudo ufw default deny incoming
+    4  sudo ufw default allow outgoing
+    5  sudo ufw enable
+    6  sudo ufw disable
+    7  sudo ufw allow 22/tcp
+    8  sudo ufw allow 443/tcp
+    9  sudo ufw allow 80/tcp
+   10  sudo ufw enable
+   11  sudo ufw status verbose
