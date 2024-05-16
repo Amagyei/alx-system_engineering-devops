@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 # this is to write best school ten times
-for((i = 0; i++; i <= 10));do
+for((i = 0; i < 11; i++));do
 echo 'Best School'
 done
