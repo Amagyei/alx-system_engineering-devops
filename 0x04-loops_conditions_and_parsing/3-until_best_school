@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # This script prints lines 10 lines of 'Best School'
-i = 0
-until [ i ge 10 ]; do 
+i=0
+until [$i ge 10 ]; do 
 echo ' Best School' ]
 ((i++))
-done  
+done
 
