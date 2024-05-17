@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # This script prints lines 10 lines of 'Best School'
 i=0
-until [ $i -ge 10 ]; do 
-	if $i -eq 9; then
+until [ $i -gt 10 ]; do 
+	if [  $i -eq 9 ]; then
 		echo 'hi'
 	else
 		echo 'Best School'
