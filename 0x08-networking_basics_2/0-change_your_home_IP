@@ -1,2 +1,3 @@
-#!/bin/bash
+:wq
+#!/usr/bin/env bash
 sudo sed -i '/127.0.0.1 localhost/c\127.0.0.2 localhost' /etc/hosts
