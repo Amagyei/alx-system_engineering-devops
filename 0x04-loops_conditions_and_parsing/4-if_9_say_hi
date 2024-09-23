@@ -1,11 +1,16 @@
 #!/usr/bin/env bash
-# This script prints lines 10 lines of 'Best School'
-i=0
-until [ $i -gt 10 ]; do 
-	if [  $i -eq 9 ]; then
-		echo 'hi'
+# Bash script that displays Best School 10 times,
+# but for the 9th iteration, displays Best School and then Hi on a new line.
+
+counter=1
+while [ $counter -le 10 ];
+do
+	if [ $counter -eq 9 ];
+	then
+		echo "Best School"
+		echo "Hi"
 	else
-		echo 'Best School'
+		echo "Best School"
 	fi
-	((i++))
+	((counter++))
 done
