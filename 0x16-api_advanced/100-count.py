@@ -1,79 +1,84 @@
 #!/usr/bin/python3
-"""Function to count words in all hot posts of a given Reddit subreddit."""
+"""Function that queries the Reddit API recursively and prints a sorted count of given keywords."""
 import requests
+import re
 
-
-def count_words(subreddit, word_list, instances=None, after="", count=0):
+def count_words(subreddit, word_list, counts=None, after="", count=0):
     """
-    Prints counts of given words found in hot posts of a given subreddit.
+    Queries the Reddit API and prints a sorted count of given keywords
+    found in the titles of all hot posts on a given subreddit.
 
-    Args:
-        subreddit (str): The subreddit to search.
-        word_list (list): The list of words to search for in post titles.
-        instances (dict): A dictionary with words (in lowercase) as keys and counts as values.
-        after (str): The parameter for pagination.
-        count (int): The current count of posts fetched.
+    Parameters:
+      subreddit (str): The subreddit to query.
+      word_list (list): A list of keywords to count (case-insensitive).
+         Duplicates in this list are taken into account.
+      counts (dict): Used internally to accumulate counts (do not supply).
+      after (str): Used internally for pagination (do not supply).
+      count (int): Used internally for pagination (do not supply).
+
+    If the subreddit is invalid or no posts match, prints nothing.
     """
-    if instances is None:
-        instances = {}
+    # On the first call, initialize the dictionaries
+    if counts is None:
+        # Create frequency dictionary: count duplicates in word_list (all lower-case)
+        freq = {}
+        for word in word_list:
+            w = word.lower()
+            freq[w] = freq.get(w, 0) + 1
+        # Initialize counts for each keyword (set to zero initially)
+        counts = {w: 0 for w in freq}
+        # Save frequency dictionary in counts under a reserved key
+        counts["_freq"] = freq
 
     url = "https://www.reddit.com/r/{}/hot/.json".format(subreddit)
-    headers = {
-        "User-Agent": "linux:0x16.api.advanced:v1.0.0 (by /u/bdov_)"
-    }
-    params = {
-        "after": after,
-        "count": count,
-        "limit": 100
-    }
+    headers = {"User-Agent": "linux:0x16.api.advanced:v1.0.0 (by /u/yourusername)"}
+    params = {"after": after, "count": count, "limit": 100}
+    response = requests.get(url, headers=headers, params=params, allow_redirects=False)
 
-    response = requests.get(url, headers=headers,
-                            params=params, allow_redirects=False)
-    # If the status code is not 200, then the subreddit is likely invalid.
+    # If the subreddit is invalid or some error occurred, return None (and print nothing)
     if response.status_code != 200:
-        print("")
-        return
+        return None
 
-    try:
-        results = response.json().get("data")
-    except Exception:
-        print("")
-        return
+    data = response.json().get("data")
+    if not data:
+        return None
 
-    # Update pagination info
-    after = results.get("after")
-    count += results.get("dist", 0)
+    after = data.get("after")
+    count += data.get("dist", 0)
 
-    # Process each post title in the "children" list
-    for child in results.get("children", []):
-        # Get the title and convert it to lowercase for case-insensitive matching
-        title = child.get("data", {}).get("title", "").lower().split()
-        for word in word_list:
-            # Compare using lowercase
-            if word.lower() in title:
-                # Count how many times this word (in lowercase) appears in the title
-                times = title.count(word.lower())
-                # Use the lower-case version of the word as the key
-                if word.lower() in instances:
-                    instances[word.lower()] += times
-                else:
-                    instances[word.lower()] = times
+    # Process each post in the "children" list
+    for child in data.get("children", []):
+        title = child.get("data", {}).get("title", "")
+        # Extract only words (only letters) in lowercase
+        words = re.findall(r"[a-zA-Z]+", title.lower())
+        for w in words:
+            if w in counts and w != "_freq":
+                # Each occurrence counts as many times as the frequency in the word list.
+                counts[w] += counts["_freq"][w]
 
-    # If there's a next page, recurse; otherwise, sort and print the results
-    if after is not None:
-        count_words(subreddit, word_list, instances, after, count)
+    # If there is more data (pagination), recurse
+    if after:
+        return count_words(subreddit, word_list, counts, after, count)
     else:
-        if not instances:
-            print("")
+        # Remove the reserved key before printing the results
+        freq = counts.pop("_freq")
+        # Filter out words with 0 count
+        result = {word: cnt for word, cnt in counts.items() if cnt > 0}
+        if not result:
             return
-        # Sort: first by count descending, then alphabetically ascending
-        sorted_instances = sorted(
-            instances.items(), key=lambda kv: (-kv[1], kv[0]))
-        for word, cnt in sorted_instances:
+        # Sort by count (descending) and alphabetically (ascending) if counts are equal
+        sorted_result = sorted(result.items(), key=lambda kv: (-kv[1], kv[0]))
+        for word, cnt in sorted_result:
             print(f"{word}: {cnt}")
+        return
 
-
-# For testing purposes:
+# For testing purposes, you can call the function as follows:
 if __name__ == "__main__":
-    # Example usage; replace "programming" and word list as needed.
-    count_words("programming", ["Python", "javascript", "java"])
+    # Example usage:
+    # python3 100-count.py programming "react python java javascript scala no_results_for_this_one"
+    import sys
+    if len(sys.argv) < 3:
+        print("Usage: {} <subreddit> <list of keywords>".format(sys.argv[0]))
+    else:
+        # Split the second argument on whitespace to form the word_list
+        count_words(sys.argv[1], sys.argv[2].split())
