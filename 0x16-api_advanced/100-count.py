@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-"""Function that queries the Reddit API recursively and prints a sorted count of given keywords."""
+"""Function that queries the Reddit API recursively 
+and prints a sorted count of given keywords."""
 import re
 import requests
 
@@ -21,7 +22,8 @@ def count_words(subreddit, word_list, counts=None, after="", count=0):
     """
     # On the first call, initialize the dictionaries
     if counts is None:
-        # Create frequency dictionary: count duplicates in word_list (all lower-case)
+        # Create frequency dictionary: count
+        # duplicates in word_list (all lower-case)
         freq = {}
         for word in word_list:
             w = word.lower()
@@ -38,7 +40,8 @@ def count_words(subreddit, word_list, counts=None, after="", count=0):
     response = requests.get(url, headers=headers,
                             params=params, allow_redirects=False)
 
-    # If the subreddit is invalid or some error occurred, return None (and print nothing)
+    # If the subreddit is invalid or
+    # some error occurred, return None (and print nothing)
     if response.status_code != 200:
         return None
 
@@ -56,7 +59,8 @@ def count_words(subreddit, word_list, counts=None, after="", count=0):
         words = re.findall(r"[a-zA-Z]+", title.lower())
         for w in words:
             if w in counts and w != "_freq":
-                # Each occurrence counts as many times as the frequency in the word list.
+                # Each occurrence counts as many
+                # times as the frequency in the word list.
                 counts[w] += counts["_freq"][w]
 
     # If there is more data (pagination), recurse
@@ -69,7 +73,8 @@ def count_words(subreddit, word_list, counts=None, after="", count=0):
         result = {word: cnt for word, cnt in counts.items() if cnt > 0}
         if not result:
             return
-        # Sort by count (descending) and alphabetically (ascending) if counts are equal
+        # Sort by count (descending) and alphabetically
+        # (ascending) if counts are equal
         sorted_result = sorted(result.items(), key=lambda kv: (-kv[1], kv[0]))
         for word, cnt in sorted_result:
             print(f"{word}: {cnt}")
@@ -79,7 +84,9 @@ def count_words(subreddit, word_list, counts=None, after="", count=0):
 # For testing purposes, you can call the function as follows:
 if __name__ == "__main__":
     # Example usage:
-    # python3 100-count.py programming "react python java javascript scala no_results_for_this_one"
+    # python3 100-count.py programming
+    # "react python java javascript
+    # scala no_results_for_this_one"
     import sys
     if len(sys.argv) < 3:
         print("Usage: {} <subreddit> <list of keywords>".format(sys.argv[0]))
