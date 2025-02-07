@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """Function that queries the Reddit API recursively and prints a sorted count of given keywords."""
-import requests
 import re
+import requests
 
 def count_words(subreddit, word_list, counts=None, after="", count=0):
     """
