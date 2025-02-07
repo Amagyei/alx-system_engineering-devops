@@ -2,9 +2,10 @@
 """Function to print hot posts on a given Reddit subreddit."""
 import requests
 
+
 def top_ten(subreddit):
     """Print the titles of the 10 hottest posts on a given subreddit.
-    
+
     If an invalid subreddit is given, print "None".
     """
     url = "https://www.reddit.com/r/{}/hot/.json".format(subreddit)
@@ -14,9 +15,10 @@ def top_ten(subreddit):
     params = {
         "limit": 10
     }
-    
+
     try:
-        response = requests.get(url, headers=headers, params=params, allow_redirects=False)
+        response = requests.get(url, headers=headers,
+                                params=params, allow_redirects=False)
         # If the response is not 200, then the subreddit is likely invalid.
         if response.status_code != 200:
             print("None")
@@ -42,6 +44,7 @@ def top_ten(subreddit):
     except Exception:
         # If any error occurs (e.g., invalid JSON), print "None"
         print("None")
+
 
 # For manual testing:
 if __name__ == "__main__":
