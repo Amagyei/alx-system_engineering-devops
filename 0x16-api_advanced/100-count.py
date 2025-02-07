@@ -3,6 +3,7 @@
 import re
 import requests
 
+
 def count_words(subreddit, word_list, counts=None, after="", count=0):
     """
     Queries the Reddit API and prints a sorted count of given keywords
@@ -31,9 +32,11 @@ def count_words(subreddit, word_list, counts=None, after="", count=0):
         counts["_freq"] = freq
 
     url = "https://www.reddit.com/r/{}/hot/.json".format(subreddit)
-    headers = {"User-Agent": "linux:0x16.api.advanced:v1.0.0 (by /u/yourusername)"}
+    headers = {
+        "User-Agent": "linux:0x16.api.advanced:v1.0.0 (by /u/yourusername)"}
     params = {"after": after, "count": count, "limit": 100}
-    response = requests.get(url, headers=headers, params=params, allow_redirects=False)
+    response = requests.get(url, headers=headers,
+                            params=params, allow_redirects=False)
 
     # If the subreddit is invalid or some error occurred, return None (and print nothing)
     if response.status_code != 200:
@@ -71,6 +74,7 @@ def count_words(subreddit, word_list, counts=None, after="", count=0):
         for word, cnt in sorted_result:
             print(f"{word}: {cnt}")
         return
+
 
 # For testing purposes, you can call the function as follows:
 if __name__ == "__main__":
