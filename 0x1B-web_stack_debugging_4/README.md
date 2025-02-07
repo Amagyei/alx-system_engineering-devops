@@ -1,5 +1,1 @@
-asdasdasdfasdasd
-asdasd
-sad
-asd
-asreadme
+# Web stack debugging 4
