@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Function that queries the Reddit API recursively 
+"""Function that queries the Reddit API recursively
 and prints a sorted count of given keywords."""
 import re
 import requests
